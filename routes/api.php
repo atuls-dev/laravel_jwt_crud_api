@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Products\ProductsController;
+use App\Http\Controllers\ContactsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,10 @@ Route::group([
     Route::resource('products', ProductsController::class);
     Route::get('products/view/all', [ProductsController::class, 'indexAll']);
     Route::get('products/view/search', [ProductsController::class, 'search']);
+
+
+    Route::resource('contacts', ContactsController::class);
+
 
 });
 

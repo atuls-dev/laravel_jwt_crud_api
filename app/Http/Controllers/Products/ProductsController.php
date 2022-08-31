@@ -11,20 +11,6 @@ use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
-/**
- * @OA\Info(
- *     description="API Documentation - Basic CRUD Laravel",
- *     version="1.0.0",
- *     title="Basic CRUD Laravel API Documentation",
- *     @OA\Contact(
- *         email="manirujjamanakash@gmail.com"
- *     ),
- *     @OA\License(
- *         name="GPL2",
- *         url="https://devsenv.com"
- *     )
- * )
- */
 
 class ProductsController extends Controller
 {
@@ -232,13 +218,11 @@ class ProductsController extends Controller
             $product =  $this->productRepository->getByID($id);
             if (empty($product)) {
                 return $this->responseError(null, 'Product Not Found', Response::HTTP_NOT_FOUND);
-            }
-
+            }    
             $deleted = $this->productRepository->delete($id);
             if (!$deleted) {
                 return $this->responseError(null, 'Failed to delete the product.', Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-
             return $this->responseSuccess($product, 'Product Deleted Successfully !');
         } catch (\Exception $e) {
             return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
