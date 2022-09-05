@@ -72,4 +72,17 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Product::class)->orderBy('id', 'desc');
     }
+
+    /**
+     * Contacts
+     *
+     * Get All contacts uploaded by user
+     *
+     * @return object Eloquent contact object
+     */
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class)->orderBy('id', 'desc');
+    }
+
 }

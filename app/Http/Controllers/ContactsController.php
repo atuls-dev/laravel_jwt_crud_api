@@ -2,15 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ContactRequest;
+use Illuminate\Support\Facades\Validator;
+use App\Repositories\ContactRepository;
+use App\Traits\ResponseTrait;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+// use App\Models\User;
+// use Illuminate\Support\Facades\Auth;
+use App\Models\Contact;
+
 
 class ContactsController extends Controller
 {
+    /**
+     * Response trait to handle return responses.
+     */
+    use ResponseTrait;
 
-    public function __construct()
+     /**
+     * Contact Repository class.
+     *
+     * @var ContactRepository
+     */
+    public $contactRepository;
+
+    public function __construct(ContactRepository $contactRepository)
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api', ['except' => ['indexAll']]);
+        $this->contactRepository = $contactRepository;
     }
 
     /**
@@ -18,10 +40,44 @@ class ContactsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        echo "Tester Bollywood Resource";
-        die('ffff');
+        try {
+            $data = $this->contactRepository->getAll();
+            return $this->responseSuccess($data, 'Contact List Fetch Successfully!');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Display a listing of the resource without authentication.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexAll(Request $request): JsonResponse
+    {
+        try {
+            $data = $this->contactRepository->getPaginatedData($request->perPage);
+            return $this->responseSuccess($data, 'Contact List Fetched Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Search contacts from database.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request): JsonResponse
+    {
+        try {
+            $data = $this->contactRepository->searchContact($request->search, $request->perPage);
+            return $this->responseSuccess($data, 'Contact List Fetched Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -40,51 +96,34 @@ class ContactsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ContactRequest $request)
     {
-
-        //Contact::create($request->all());
-
-        //Validate data
-        $data = $request->only('name', 'email', 'phone', 'message');
-        $validator = Validator::make($data, [
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required|number',
-            'message' => 'required'
-        ]);
-
-        //Send failed response if request is not valid
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->messages()], 200);
+        try {
+            $contact = $this->contactRepository->create($request->all());
+            return $this->responseSuccess($contact, 'New Contact Created Successfully!');
+        } catch (\Exception $exception) {
+            return $this->responseError(null, $exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-         //Request is valid, create new product
-        $contact = $this->user->products()->create([
-            'name' => $request->name,
-            'email' => $request->sku,
-            'phone' => $request->price,
-            'message' => $request->quantity
-        ]);
-
-        //Product created, return success response
-        return response()->json([
-            'success' => true,
-            'message' => 'Contact created successfully',
-            'data' => $contact
-        ], Response::HTTP_OK);
-
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\contact  $contact
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(contact $contact)
+    public function show($id): JsonResponse
     {
-        //
+        try {
+            $data = $this->contactRepository->getByID($id);
+            if (is_null($data)) {
+                return $this->responseError(null, 'Contact Not Found', Response::HTTP_NOT_FOUND);
+            }
+
+            return $this->responseSuccess($data, 'Contact Details Fetch Successfully!');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -102,22 +141,42 @@ class ContactsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\contact  $contact
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, contact $contact)
+    public function update(ContactRequest $request, $id): JsonResponse
     {
-        //
+        try {
+            $data = $this->contactRepository->update($id, $request->all());
+            if (is_null($data))
+                return $this->responseError(null, 'Contact Not Found', Response::HTTP_NOT_FOUND);
+
+            return $this->responseSuccess($data, 'Contact Updated Successfully!');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\contact  $contact
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(contact $contact)
+    public function destroy($id): JsonResponse
     {
-        //
+        try {
+            $contact =  $this->contactRepository->getByID($id);
+            if (empty($contact)) {
+                return $this->responseError(null, 'Contact Not Found', Response::HTTP_NOT_FOUND);
+            }    
+            $deleted = $this->contactRepository->delete($id);
+            if (!$deleted) {
+                return $this->responseError(null, 'Failed to delete the contact.', Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+            return $this->responseSuccess($contact, 'Contact Deleted Successfully!');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

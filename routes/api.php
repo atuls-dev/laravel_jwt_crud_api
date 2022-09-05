@@ -38,9 +38,10 @@ Route::group([
     Route::get('products/view/all', [ProductsController::class, 'indexAll']);
     Route::get('products/view/search', [ProductsController::class, 'search']);
 
-
+    
+    Route::get('contacts/search', [ContactsController::class, 'search']);   
     Route::resource('contacts', ContactsController::class);
-
+    Route::get('contacts/view/all', [ContactsController::class, 'indexAll']);
 
 });
 

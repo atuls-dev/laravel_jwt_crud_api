@@ -16,4 +16,16 @@ class Contact extends Model
         'message',
     ];
 
+    /**
+     * User
+     *
+     * Get User By Contact
+     *
+     * @return object
+     */
+    public function user(): object
+    {
+        return $this->belongsTo(User::class)->select('id', 'name', 'email');
+    }
+
 }
