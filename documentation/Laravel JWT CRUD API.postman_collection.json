@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "54099ae7-9245-4f22-8ec6-be72af10f946",
-		"name": "Laravel CRUD API",
+		"_postman_id": "edb04449-4636-465b-9f92-4fa60b2174d0",
+		"name": "Laravel JWT CRUD API",
 		"description": "Simple CRUD API with Laravel for WeDevs",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20920849"
 	},
 	"item": [
 		{
@@ -17,7 +18,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9yZWdpc3RlciIsImlhdCI6MTY2MTMzNjgxOSwiZXhwIjoxNjYzOTI4ODE5LCJuYmYiOjE2NjEzMzY4MTksImp0aSI6IjBmVXBSTXMyU1NhRkRoUVAiLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.nU5SNiAAz8Z0XBgICAZOhyC4gpqnJhNm5F-sTJSseGY",
+									"value": "{{base_url}}",
 									"type": "string"
 								}
 							]
@@ -56,7 +57,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": ",,eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTY2MTM0NDQ5MywiZXhwIjoxNjYzOTM2NDkzLCJuYmYiOjE2NjEzNDQ0OTMsImp0aSI6Im1ZT2RQUFRTZ3NQVDEzcFYiLCJzdWIiOiIyIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.1-SAD0JoI731x2ZtSz311e0x9te45KDAcapPkKnE6AY",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -73,7 +74,7 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "Test Product 66",
+									"value": "Test Product 67",
 									"type": "text"
 								},
 								{
@@ -84,7 +85,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "playstore.png"
+									"src": "/home/atul/Pictures/Screenshots/Screenshot from 2022-05-06 18-16-54.png"
 								},
 								{
 									"key": "description",
@@ -99,17 +100,11 @@
 							]
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/products",
-							"protocol": "http",
+							"raw": "{{base_url}}api/products",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}api"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"products"
 							]
 						}
@@ -401,6 +396,313 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Contacts",
+			"item": [
+				{
+					"name": "Get Contacts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/contacts?page=1",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"contacts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Contacts",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/contacts/view/all/?perPage=3&page=3",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"contacts",
+								"view",
+								"all",
+								""
+							],
+							"query": [
+								{
+									"key": "perPage",
+									"value": "3"
+								},
+								{
+									"key": "page",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Contact",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "test name",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "test@yopmail",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "9999943210",
+									"type": "text"
+								},
+								{
+									"key": "message",
+									"value": "Building another user postman description bulk edit",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}api/contacts",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contact By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/contacts/3",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"contacts",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Post Desc",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "post333@yopmail.com",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "9999988888",
+									"type": "text"
+								},
+								{
+									"key": "message",
+									"value": "Click building send to get a response",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}api/contacts/12",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"contacts",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/contacts/7",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"contacts",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Contact",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/contacts/search/?search=shubham&perPage=2&page=1",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"contacts",
+								"search",
+								""
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "shubham"
+								},
+								{
+									"key": "perPage",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTY2MTk0ODA0NiwiZXhwIjoxNjY0NTQwMDQ2LCJuYmYiOjE2NjE5NDgwNDYsImp0aSI6IkNvVFRFNVp4eHV2NG1wem8iLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.hS1JRwKwjm-AsZA24u2TOvJUbMarZB4TYktARYW2FV8",
+			"type": "string"
 		}
 	]
 }
